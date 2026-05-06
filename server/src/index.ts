@@ -7,6 +7,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import authRoutes from './routes/auth.routes';
+import shopRoutes from './routes/shop.routes';
+import productRoutes from './routes/product.routes';
+import orderRoutes from './routes/order.routes';
 import { errorHandler } from './middlewares/error.middleware';
 
 const app = express();
@@ -21,11 +24,16 @@ io.on('connection', (socket) => {
   socket.on('join-buyer-room', (userId: string) => socket.join(`buyer:${userId}`));
 });
 
+app.use('/api/orders/webhook', express.raw({ type: 'application/json' }));
 app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/shops', shopRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+
 app.get('/api/health', (_, res) => res.json({ status: 'ok', message: '🌱 EcoMarket fonctionne !' }));
 app.use(errorHandler);
 
@@ -33,8 +41,3 @@ const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => console.log(`✅ Serveur démarré sur http://localhost:${PORT}`));
 
 export default app;
-import shopRoutes from './routes/shop.routes';
-import productRoutes from './routes/product.routes';
-app.use('/api/shops', shopRoutes);
-app.use('/api/products', productRoutes);
-
