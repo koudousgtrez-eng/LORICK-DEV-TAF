@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, ShoppingCart, Star, Package } from 'lucide-react';
+import { Search, SlidersHorizontal, ShoppingCart, Star, Package, Store } from 'lucide-react';
 import api from '../lib/api';
 import { useCartStore } from '../store/cart.store';
 
@@ -123,7 +123,7 @@ export default function CataloguePage() {
                       <p className="text-xs text-gray-400 mb-2 flex items-center gap-1">
                         <Store size={11} /> {product.shop?.name}
                       </p>
-                      {product.reviews?.length > 0 && (
+                      {product.reviews && product.reviews.length > 0 && (
                         <div className="flex items-center gap-1 mb-2">
                           <Star size={12} className="text-yellow-400 fill-yellow-400" />
                           <span className="text-xs text-gray-500">
