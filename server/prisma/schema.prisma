@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  RECEIVED
+  PREPARING
+  READY
+  DELIVERED
+}
+
+enum ShopStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+}
+
+enum ReviewStatus {
+  VISIBLE
+  FLAGGED
+  HIDDEN
+}
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  role             Role      @default(BUYER)
+  firstName        String
+  lastName         String
+  isEmailVerified  Boolean   @default(false)
+  emailVerifyToken String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  shop    Shop?
+  orders  Order[]   @relation("BuyerOrders")
+  reviews Review[]
+}
+
+model Shop {
+  id           String     @id @default(uuid())
+  name         String
+  description  String?
+  latitude     Float
+  longitude    Float
+  address      String
+  photos       String[]
+  practices    String?
+  status       ShopStatus @default(PENDING)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  owner        User          @relation(fields: [ownerId], references: [id])
+  ownerId      String        @unique
+  products     Product[]
+  orders       Order[]       @relation("SellerOrders")
+  pickupPoints PickupPoint[]
+}
+
+model PickupPoint {
+  id      String @id @default(uuid())
+  name    String
+  address String
+
+  shop   Shop    @relation(fields: [shopId], references: [id])
+  shopId String
+  orders Order[]
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  category        String
+  price           Float
+  unit            String
+  stock           Int
+  photos          String[]
+  isPublished     Boolean  @default(false)
+  nutritionalInfo String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  shop       Shop        @relation(fields: [shopId], references: [id])
+  shopId     String
+  orderItems OrderItem[]
+  reviews    Review[]
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  totalAmount     Float
+  status          OrderStatus @default(RECEIVED)
+  stripePaymentId String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  buyer         User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  buyerId       String
+  shop          Shop        @relation("SellerOrders", fields: [shopId], references: [id])
+  shopId        String
+  pickupPoint   PickupPoint @relation(fields: [pickupPointId], references: [id])
+  pickupPointId String
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  quantity  Int
+  unitPrice Float
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model Review {
+  id        String       @id @default(uuid())
+  rating    Int
+  comment   String
+  status    ReviewStatus @default(VISIBLE)
+  createdAt DateTime     @default(now())
+
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@unique([authorId, productId])
+}
