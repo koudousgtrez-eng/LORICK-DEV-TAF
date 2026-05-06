@@ -8,6 +8,7 @@ import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import SellerDashboard from './pages/SellerDashboard';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-success" element={<OrderSuccessPage />} />
+          <Route path="/seller" element={<SellerDashboard />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder'
 
 export const createCheckoutSession = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { items, pickupPointId } = req.body;
+    const { items } = req.body;
 
     if (!items || items.length === 0) {
       res.status(400).json({ message: 'Panier vide' });
@@ -39,7 +39,6 @@ export const createCheckoutSession = async (req: AuthRequest, res: Response): Pr
       cancel_url: `${process.env.CLIENT_URL}/cart`,
       metadata: {
         buyerId: req.user!.id,
-        pickupPointId,
         items: JSON.stringify(items),
       },
     });
@@ -64,22 +63,32 @@ export const stripeWebhook = async (req: any, res: Response): Promise<void> => {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as any;
-    const { buyerId, pickupPointId, items } = session.metadata;
+    const { buyerId, items } = session.metadata;
     const parsedItems = JSON.parse(items);
 
     const products = await Promise.all(
       parsedItems.map((item: any) => prisma.product.findUnique({
         where: { id: item.productId },
-        include: { shop: true },
+        include: { shop: { include: { pickupPoints: true } } },
       }))
     );
 
-    const shopId = products[0]?.shop.id;
+    const shop = products[0]?.shop;
+    if (!shop) { res.json({ received: true }); return; }
+
+    // Utiliser le premier point de retrait ou en créer un par défaut
+    let pickupPointId = shop.pickupPoints[0]?.id;
+    if (!pickupPointId) {
+      const pp = await prisma.pickupPoint.create({
+        data: { name: shop.name, address: shop.address, shopId: shop.id },
+      });
+      pickupPointId = pp.id;
+    }
 
     const order = await prisma.order.create({
       data: {
         buyerId,
-        shopId,
+        shopId: shop.id,
         pickupPointId,
         totalAmount: session.amount_total / 100,
         stripePaymentId: session.payment_intent,
@@ -116,6 +125,40 @@ export const getMyOrders = async (req: AuthRequest, res: Response): Promise<void
       orderBy: { createdAt: 'desc' },
     });
     res.json(orders);
+  } catch {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+export const getSellerOrders = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const shop = await prisma.shop.findFirst({ where: { ownerId: req.user!.id } });
+    if (!shop) { res.json([]); return; }
+
+    const orders = await prisma.order.findMany({
+      where: { shopId: shop.id },
+      include: {
+        buyer: { select: { firstName: true, lastName: true, email: true } },
+        items: { include: { product: { select: { name: true } } } },
+        pickupPoint: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(orders);
+  } catch {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+export const updateOrderStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const id = req.params.id as string;
+    const { status } = req.body;
+    const order = await prisma.order.update({
+      where: { id },
+      data: { status },
+    });
+    res.json(order);
   } catch {
     res.status(500).json({ message: 'Erreur serveur' });
   }
