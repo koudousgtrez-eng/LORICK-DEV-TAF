@@ -38,10 +38,12 @@ app.use('/api/orders', orderRoutes);
 app.use('/api', reviewRoutes);
 app.use('/api/admin', adminRoutes);
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', message: '🌱 EcoMarket fonctionne !' }));
+app.get('/api/health', (_, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 4000;
-httpServer.listen(PORT, () => console.log(`✅ Serveur démarré sur http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 4000;
+  httpServer.listen(PORT, () => console.log(`✅ Serveur démarré sur http://localhost:${PORT}`));
+}
 
 export default app;
