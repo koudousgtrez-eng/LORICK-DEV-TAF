@@ -33,3 +33,8 @@ const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => console.log(`✅ Serveur démarré sur http://localhost:${PORT}`));
 
 export default app;
+import shopRoutes from './routes/shop.routes';
+import productRoutes from './routes/product.routes';
+app.use('/api/shops', shopRoutes);
+app.use('/api/products', productRoutes);
+
