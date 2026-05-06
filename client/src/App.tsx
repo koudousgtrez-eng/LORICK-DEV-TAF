@@ -12,6 +12,7 @@ import SellerDashboard from './pages/SellerDashboard';
 import MapPage from './pages/MapPage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import CreateShopPage from './pages/CreateShopPage';
+import AdminDashboard from './pages/AdminDashboard';
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/seller/create-shop" element={<CreateShopPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/my-orders" element={<MyOrdersPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

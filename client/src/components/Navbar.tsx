@@ -38,6 +38,9 @@ export default function Navbar() {
                   <Link to="/seller/create-shop" className="text-gray-600 hover:text-green-600">Ma boutique</Link>
                 </>
               )}
+              {user.role === 'ADMIN' && (
+                <Link to="/admin" className="text-gray-600 hover:text-green-600">Admin</Link>
+              )}
               <span className="text-gray-700 font-medium">{user.firstName}</span>
               <button onClick={handleLogout} className="bg-red-100 text-red-600 px-3 py-1 rounded-lg hover:bg-red-200">
                 Déconnexion
