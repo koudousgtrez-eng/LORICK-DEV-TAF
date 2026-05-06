@@ -9,6 +9,9 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import SellerDashboard from './pages/SellerDashboard';
+import MapPage from './pages/MapPage';
+import MyOrdersPage from './pages/MyOrdersPage';
+import CreateShopPage from './pages/CreateShopPage';
 
 const queryClient = new QueryClient();
 
@@ -26,6 +29,9 @@ export default function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-success" element={<OrderSuccessPage />} />
           <Route path="/seller" element={<SellerDashboard />} />
+          <Route path="/seller/create-shop" element={<CreateShopPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/my-orders" element={<MyOrdersPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
