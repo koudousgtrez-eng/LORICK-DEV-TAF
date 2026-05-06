@@ -13,7 +13,8 @@ import orderRoutes from './routes/order.routes';
 import reviewRoutes from './routes/review.routes';
 import adminRoutes from './routes/admin.routes';
 import { errorHandler } from './middlewares/error.middleware';
-
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 const app = express();
 const httpServer = createServer(app);
 
@@ -40,6 +41,7 @@ app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 if (process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 4000;
