@@ -11,6 +11,7 @@ import shopRoutes from './routes/shop.routes';
 import productRoutes from './routes/product.routes';
 import orderRoutes from './routes/order.routes';
 import reviewRoutes from './routes/review.routes';
+import adminRoutes from './routes/admin.routes';
 import { errorHandler } from './middlewares/error.middleware';
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/shops', shopRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok', message: '🌱 EcoMarket fonctionne !' }));
 app.use(errorHandler);

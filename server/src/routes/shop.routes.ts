@@ -1,11 +1,6 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.middleware';
-import {
-  getShops,
-  getShop,
-  createShop,
-  getMyShop,
-} from '../controllers/shop.controller';
+import { getShops, getShop, createShop, getMyShop } from '../controllers/shop.controller';
 
 const router = Router();
 
