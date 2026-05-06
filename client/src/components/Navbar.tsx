@@ -1,58 +1,77 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingCart, Map, BookOpen, LogOut, User, Store, LayoutDashboard, Leaf } from 'lucide-react';
 import { useAuthStore } from '../store/auth.store';
 import { useCartStore } from '../store/cart.store';
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
+  const items = useCartStore(s => s.items);
   const navigate = useNavigate();
-  const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const location = useLocation();
+  const cartCount = items.reduce((s, i) => s + i.quantity, 0);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const handleLogout = () => { logout(); navigate('/'); };
+
+  const isActive = (path: string) =>
+    location.pathname === path ? 'text-green-600 font-semibold' : 'text-gray-600 hover:text-green-600';
 
   return (
-    <nav className="bg-white shadow-sm border-b">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold text-green-700">🌱 EcoMarket</Link>
-        <div className="flex items-center gap-4">
-          <Link to="/" className="text-gray-600 hover:text-green-600">Catalogue</Link>
-          <Link to="/map" className="text-gray-600 hover:text-green-600">Carte</Link>
-          <Link to="/cart" className="relative text-gray-600 hover:text-green-600">
-            🛒
+    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center group-hover:bg-green-700 transition-colors">
+            <Leaf size={18} className="text-white" />
+          </div>
+          <span className="text-xl font-bold text-gray-900">Eco<span className="text-green-600">Market</span></span>
+        </Link>
+
+        <div className="flex items-center gap-6">
+          <Link to="/" className={`flex items-center gap-1.5 text-sm transition-colors ${isActive('/')}`}>
+            <BookOpen size={16} /> Catalogue
+          </Link>
+          <Link to="/map" className={`flex items-center gap-1.5 text-sm transition-colors ${isActive('/map')}`}>
+            <Map size={16} /> Carte
+          </Link>
+
+          {user?.role === 'SELLER' && (
+            <Link to="/seller" className={`flex items-center gap-1.5 text-sm transition-colors ${isActive('/seller')}`}>
+              <Store size={16} /> Mon espace
+            </Link>
+          )}
+          {user?.role === 'ADMIN' && (
+            <Link to="/admin" className={`flex items-center gap-1.5 text-sm transition-colors ${isActive('/admin')}`}>
+              <LayoutDashboard size={16} /> Admin
+            </Link>
+          )}
+
+          <Link to="/cart" className="relative flex items-center gap-1.5 text-sm text-gray-600 hover:text-green-600 transition-colors">
+            <ShoppingCart size={18} />
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             )}
           </Link>
+
           {user ? (
-            <>
-              {user.role === 'BUYER' && (
-                <Link to="/my-orders" className="text-gray-600 hover:text-green-600">Mes commandes</Link>
-              )}
-              {user.role === 'SELLER' && (
-                <>
-                  <Link to="/seller" className="text-gray-600 hover:text-green-600">Mon espace</Link>
-                  <Link to="/seller/create-shop" className="text-gray-600 hover:text-green-600">Ma boutique</Link>
-                </>
-              )}
-              {user.role === 'ADMIN' && (
-                <Link to="/admin" className="text-gray-600 hover:text-green-600">Admin</Link>
-              )}
-              <span className="text-gray-700 font-medium">{user.firstName}</span>
-              <button onClick={handleLogout} className="bg-red-100 text-red-600 px-3 py-1 rounded-lg hover:bg-red-200">
-                Déconnexion
+            <div className="flex items-center gap-3">
+              <Link to="/my-orders" className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-green-600 transition-colors">
+                <User size={16} />
+                <span className="hidden md:block">{user.firstName}</span>
+              </Link>
+              <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-red-500 transition-colors">
+                <LogOut size={16} />
               </button>
-            </>
+            </div>
           ) : (
-            <>
-              <Link to="/login" className="text-gray-600 hover:text-green-600">Connexion</Link>
-              <Link to="/register" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+            <div className="flex items-center gap-2">
+              <Link to="/login" className="text-sm text-gray-600 hover:text-green-600 transition-colors px-3 py-1.5">
+                Connexion
+              </Link>
+              <Link to="/register" className="text-sm bg-green-600 text-white px-4 py-1.5 rounded-lg hover:bg-green-700 transition-colors font-medium">
                 S'inscrire
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>

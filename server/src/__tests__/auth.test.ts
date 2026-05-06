@@ -1,3 +1,4 @@
+cat > /Users/king/LORICK-DEV-TAF/server/src/__tests__/auth.test.ts << 'EOF'
 import request from 'supertest';
 import app from '../index';
 import { prisma } from '../config/prisma';
@@ -23,15 +24,22 @@ describe('Auth — Inscription', () => {
       lastName: 'User',
       role: 'BUYER',
     });
-    expect(res.status).not.toBe(500);
+    expect([200, 201, 409]).toContain(res.status);
   });
 
   it('POST /api/auth/register email existant → 409', async () => {
-    const res = await request(app).post('/api/auth/register').send({
-      email: 'jest_user@test.com',
+    await request(app).post('/api/auth/register').send({
+      email: 'jest_dupli@test.com',
       password: 'Test1234!',
       firstName: 'Jest',
-      lastName: 'User',
+      lastName: 'Dupli',
+      role: 'BUYER',
+    });
+    const res = await request(app).post('/api/auth/register').send({
+      email: 'jest_dupli@test.com',
+      password: 'Test1234!',
+      firstName: 'Jest',
+      lastName: 'Dupli',
       role: 'BUYER',
     });
     expect(res.status).toBe(409);
@@ -65,3 +73,4 @@ describe('Auth — Connexion', () => {
     expect(res.body).toHaveProperty('accessToken');
   });
 });
+EOF
