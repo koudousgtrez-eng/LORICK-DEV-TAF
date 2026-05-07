@@ -40,8 +40,8 @@ export default function CataloguePage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-green-700 to-green-500 text-white py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-3">Produits locaux & artisanaux</h1>
-          <p className="text-green-100 text-lg mb-8">Directement des producteurs de votre region</p>
+          <h1 className="text-2xl md:text-2xl md:text-4xl font-bold mb-3">Produits locaux & artisanaux</h1>
+          <p className="text-green-100 text-base md:text-lg mb-6">Directement des producteurs de votre region</p>
           <div className="relative max-w-xl mx-auto">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input type="text" placeholder="Rechercher un produit..." value={search}

@@ -49,7 +49,7 @@ export default function SellerDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {[
             { icon: Package, label: 'Produits', value: shop?.products?.length || 0, color: 'text-blue-600 bg-blue-50' },
             { icon: ShoppingBag, label: 'Commandes', value: orders?.length || 0, color: 'text-purple-600 bg-purple-50' },

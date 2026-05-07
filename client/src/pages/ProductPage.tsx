@@ -72,7 +72,7 @@ export default function ProductPage() {
         </Link>
 
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8 border-2 border-transparent hover:border-orange-200 hover:shadow-orange-100 hover:shadow-lg transition-all duration-300">
-          <div className="grid md:grid-cols-2 gap-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             <div className="relative h-80 md:h-full min-h-80 overflow-hidden">
               <img src={photo} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER[product.category] || PLACEHOLDER['legumes']; }} />
@@ -85,7 +85,7 @@ export default function ProductPage() {
 
             <div className="p-8 flex flex-col justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
+                <h1 className="text-xl md:text-xl md:text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
                 {avgRating && (
                   <div className="flex items-center gap-1 mb-3">
                     {[1,2,3,4,5].map(s => (

@@ -51,7 +51,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-6">
         <button onClick={() => navigate('/cart')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors mb-6">
           <ArrowLeft size={16} /> Retour au panier
         </button>
