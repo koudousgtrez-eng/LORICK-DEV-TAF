@@ -5,15 +5,15 @@ import { Search, SlidersHorizontal, ShoppingCart, Star, Package, Store } from 'l
 import api from '../lib/api';
 import { useCartStore } from '../store/cart.store';
 
-const CATEGORIES = ['Toutes', 'légumes', 'fruits', 'fromage', 'charcuterie', 'oeufs', 'epicerie'];
+const CATEGORIES = ['Toutes', 'legumes', 'fruits', 'fromage', 'charcuterie', 'oeufs', 'epicerie'];
 
 const PLACEHOLDER: Record<string, string> = {
-  légumes: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400',
+  legumes: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400',
   fruits: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400',
-  fromage: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a318?w=400',
-  charcuterie: 'https://images.unsplash.com/photo-1544025162-d76538897a07?w=400',
-  oeufs: 'https://images.unsplash.com/photo-1569288052389-dac9b0ac9eac?w=400',
-  epicerie: 'https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=400',
+  fromage: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=400',
+  charcuterie: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400',
+  oeufs: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400',
+  epicerie: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=400',
 };
 
 export default function CataloguePage() {
@@ -36,35 +36,31 @@ export default function CataloguePage() {
   const isInCart = (id: string) => cartItems.some(i => i.productId === id);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       {/* Hero */}
       <div className="bg-gradient-to-br from-green-700 to-green-500 text-white py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl font-bold mb-3">Produits locaux & artisanaux</h1>
-          <p className="text-green-100 text-lg mb-8">Directement des producteurs de votre région</p>
+          <p className="text-green-100 text-lg mb-8">Directement des producteurs de votre region</p>
           <div className="relative max-w-xl mx-auto">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Rechercher un produit..."
-              value={search}
+            <input type="text" placeholder="Rechercher un produit..." value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-800 text-base shadow-lg outline-none focus:ring-2 focus:ring-green-300"
-            />
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-800 text-base shadow-lg outline-none focus:ring-2 focus:ring-orange-300" />
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Filtres catégories */}
+        {/* Filtres */}
         <div className="flex items-center gap-2 mb-8 flex-wrap">
           <SlidersHorizontal size={16} className="text-gray-400" />
           {CATEGORIES.map(cat => (
             <button key={cat} onClick={() => { setCategory(cat); setPage(1); }}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                 category === cat
                   ? 'bg-green-600 text-white shadow-sm'
-                  : 'bg-white text-gray-600 hover:bg-green-50 border border-gray-200'
+                  : 'bg-white text-gray-600 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 border border-gray-200 transition-all'
               }`}>
               {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
@@ -87,21 +83,24 @@ export default function CataloguePage() {
         ) : data?.products?.length === 0 ? (
           <div className="text-center py-20">
             <Package size={48} className="text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">Aucun produit trouvé</p>
+            <p className="text-gray-500 text-lg">Aucun produit trouve</p>
           </div>
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-4">{data?.pagination?.total || 0} produit(s)</p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {data?.products?.map((product: any) => {
-                const photo = product.photos?.[0] || PLACEHOLDER[product.category] || PLACEHOLDER['légumes'];
+                const photo = product.photos?.[0] || PLACEHOLDER[product.category] || PLACEHOLDER['legumes'];
                 const inCart = isInCart(product.id);
                 return (
-                  <div key={product.id} className="bg-white rounded-2xl shadow-sm hover:shadow-orange-200 hover:shadow-lg transition-all duration-300 overflow-hidden group border border-transparent hover:border-orange-200">
+                  <div key={product.id}
+                    className="bg-white rounded-2xl shadow-sm overflow-hidden group border-2 border-transparent hover:border-orange-300 hover:shadow-orange-200 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                    style={{ transition: 'all 0.3s ease' }}>
                     <Link to={`/products/${product.id}`} className="block">
                       <div className="relative h-48 overflow-hidden">
                         <img src={photo} alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER[product.category] || PLACEHOLDER['legumes']; }} />
                         <div className="absolute top-2 left-2">
                           <span className="bg-white/90 backdrop-blur-sm text-gray-600 text-xs px-2 py-0.5 rounded-full font-medium capitalize">
                             {product.category}
@@ -109,7 +108,7 @@ export default function CataloguePage() {
                         </div>
                         {product.stock < 10 && product.stock > 0 && (
                           <div className="absolute top-2 right-2">
-                            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">Stock limité</span>
+                            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">Stock limite</span>
                           </div>
                         )}
                       </div>
@@ -138,13 +137,13 @@ export default function CataloguePage() {
                         </div>
                         <button
                           onClick={() => addItem({ productId: product.id, name: product.name, price: product.price, unit: product.unit, photo, shopId: product.shop?.id, shopName: product.shop?.name, quantity: 1 })}
-                          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                             inCart
                               ? 'bg-green-100 text-green-700'
-                              : 'bg-green-600 text-white hover:bg-green-700'
+                              : 'bg-green-600 text-white hover:bg-orange-500 hover:shadow-md hover:shadow-orange-200'
                           }`}>
                           <ShoppingCart size={13} />
-                          {inCart ? 'Ajouté' : 'Ajouter'}
+                          {inCart ? 'Ajoute' : 'Ajouter'}
                         </button>
                       </div>
                     </div>
@@ -153,13 +152,12 @@ export default function CataloguePage() {
               })}
             </div>
 
-            {/* Pagination */}
             {data?.pagination?.totalPages > 1 && (
               <div className="flex justify-center gap-2 mt-10">
                 {[...Array(data.pagination.totalPages)].map((_,i) => (
                   <button key={i} onClick={() => setPage(i + 1)}
                     className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
-                      page === i + 1 ? 'bg-green-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-green-400'
+                      page === i + 1 ? 'bg-green-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-600'
                     }`}>
                     {i + 1}
                   </button>
