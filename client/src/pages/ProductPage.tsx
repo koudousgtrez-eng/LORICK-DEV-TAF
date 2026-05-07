@@ -7,10 +7,12 @@ import { useCartStore } from '../store/cart.store';
 import { useAuthStore } from '../store/auth.store';
 
 const PLACEHOLDER: Record<string, string> = {
-  légumes: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800',
+  legumes: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800',
   fruits: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=800',
-  fromage: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a318?w=800',
-  charcuterie: 'https://images.unsplash.com/photo-1544025162-d76538897a07?w=800',
+  fromage: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?w=800',
+  charcuterie: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800',
+  oeufs: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=800',
+  epicerie: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800',
 };
 
 export default function ProductPage() {
@@ -33,22 +35,25 @@ export default function ProductPage() {
   });
 
   if (isLoading) return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="animate-pulse grid md:grid-cols-2 gap-10">
-        <div className="h-96 bg-gray-200 rounded-2xl" />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
+      <div className="animate-pulse w-full max-w-4xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+        <div className="h-96 bg-white/60 rounded-2xl" />
         <div className="space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-3/4" />
-          <div className="h-4 bg-gray-200 rounded w-1/2" />
-          <div className="h-24 bg-gray-200 rounded" />
+          <div className="h-8 bg-white/60 rounded w-3/4" />
+          <div className="h-4 bg-white/60 rounded w-1/2" />
+          <div className="h-24 bg-white/60 rounded" />
         </div>
       </div>
     </div>
   );
 
-  if (!product) return <div className="text-center py-20 text-gray-500">Produit introuvable</div>;
+  if (!product) return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
+      <p className="text-gray-500">Produit introuvable</p>
+    </div>
+  );
 
-  const photo = product.photos?.[0] || PLACEHOLDER[product.category] || PLACEHOLDER['légumes'];
-  const inCart = cartItems.some(i => i.productId === product.id);
+  const photo = product.photos?.[0] || PLACEHOLDER[product.category] || PLACEHOLDER['legumes'];
   const avgRating = product.reviews?.length
     ? product.reviews.reduce((s: number, r: any) => s + r.rating, 0) / product.reviews.length
     : null;
@@ -60,17 +65,17 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors mb-6">
           <ChevronLeft size={16} /> Retour au catalogue
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8 border-2 border-transparent hover:border-orange-200 hover:shadow-orange-100 hover:shadow-lg transition-all duration-300">
           <div className="grid md:grid-cols-2 gap-0">
-            {/* Image */}
             <div className="relative h-80 md:h-full min-h-80 overflow-hidden">
-              <img src={photo} alt={product.name} className="w-full h-full object-cover" />
+              <img src={photo} alt={product.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER[product.category] || PLACEHOLDER['legumes']; }} />
               <div className="absolute top-4 left-4">
                 <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-sm px-3 py-1 rounded-full font-medium capitalize">
                   {product.category}
@@ -78,7 +83,6 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Infos */}
             <div className="p-8 flex flex-col justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h1>
@@ -92,7 +96,7 @@ export default function ProductPage() {
                 )}
                 <p className="text-gray-600 text-sm leading-relaxed mb-6">{product.description}</p>
 
-                <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-2">
+                <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-2 border border-gray-100">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Stock disponible</span>
                     <span className={`font-medium ${product.stock < 10 ? 'text-orange-500' : 'text-green-600'}`}>
@@ -100,7 +104,7 @@ export default function ProductPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Unité</span>
+                    <span className="text-gray-500">Unite</span>
                     <span className="font-medium text-gray-700">{product.unit}</span>
                   </div>
                   {product.shop && (
@@ -118,31 +122,29 @@ export default function ProductPage() {
                   <span className="text-gray-400">/ {product.unit}</span>
                 </div>
                 <button onClick={handleAdd} disabled={product.stock === 0}
-                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-base transition-all ${
-                    added ? 'bg-green-100 text-green-700'
+                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-base transition-all duration-300 ${
+                    added ? 'bg-green-100 text-green-700 border-2 border-green-300'
                     : product.stock === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700 shadow-sm hover:shadow-md'
+                    : 'bg-green-600 text-white hover:bg-orange-500 shadow-sm hover:shadow-lg hover:shadow-orange-200'
                   }`}>
-                  {added ? <><CheckCircle size={20} /> Ajouté au panier</> : product.stock === 0 ? <><Package size={20} /> Rupture de stock</> : <><ShoppingCart size={20} /> Ajouter au panier</>}
+                  {added ? <><CheckCircle size={20} /> Ajoute au panier</> : product.stock === 0 ? <><Package size={20} /> Rupture de stock</> : <><ShoppingCart size={20} /> Ajouter au panier</>}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Localisation boutique */}
         {product.shop && (
-          <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 border-2 border-transparent hover:border-orange-200 transition-all duration-300">
             <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
               <MapPin size={18} className="text-green-600" /> Point de retrait
             </h2>
             <p className="text-gray-700 font-medium">{product.shop.name}</p>
-            <p className="text-sm text-gray-500">Coordonnées disponibles sur la carte</p>
+            <p className="text-sm text-gray-500">Coordonnees disponibles sur la carte</p>
           </div>
         )}
 
-        {/* Avis */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div className="bg-white rounded-2xl shadow-sm p-6 border-2 border-transparent hover:border-orange-200 transition-all duration-300">
           <h2 className="font-bold text-gray-800 mb-6 flex items-center gap-2">
             <Star size={18} className="text-yellow-400 fill-yellow-400" />
             Avis clients ({product.reviews?.length || 0})
@@ -150,10 +152,10 @@ export default function ProductPage() {
 
           <div className="space-y-4 mb-8">
             {product.reviews?.length === 0 && (
-              <p className="text-gray-400 text-sm text-center py-4">Aucun avis pour l'instant. Soyez le premier !</p>
+              <p className="text-gray-400 text-sm text-center py-4">Aucun avis. Soyez le premier !</p>
             )}
             {product.reviews?.map((r: any) => (
-              <div key={r.id} className="border border-gray-100 rounded-xl p-4">
+              <div key={r.id} className="border border-gray-100 rounded-xl p-4 hover:border-orange-200 transition-all duration-200">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-gray-700 text-sm">{r.author?.firstName} {r.author?.lastName}</span>
                   <div className="flex">
@@ -178,13 +180,13 @@ export default function ProductPage() {
                 ))}
               </div>
               <textarea value={review.comment} onChange={e => setReview({ ...review, comment: e.target.value })}
-                placeholder="Partagez votre expérience..."
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-300 resize-none"
+                placeholder="Partagez votre experience..."
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 resize-none transition-all"
                 rows={3} />
               <button onClick={() => submitReview.mutate()}
                 disabled={!review.comment.trim() || submitReview.isPending}
-                className="mt-3 bg-green-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-colors">
-                {submitReview.isPending ? 'Envoi...' : 'Publier l\'avis'}
+                className="mt-3 bg-green-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-orange-500 hover:shadow-md hover:shadow-orange-200 disabled:opacity-50 transition-all duration-300">
+                {submitReview.isPending ? 'Envoi...' : "Publier l'avis"}
               </button>
             </div>
           )}
