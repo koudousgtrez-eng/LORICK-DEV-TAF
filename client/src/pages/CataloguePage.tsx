@@ -97,7 +97,7 @@ export default function CataloguePage() {
                 const photo = product.photos?.[0] || PLACEHOLDER[product.category] || PLACEHOLDER['légumes'];
                 const inCart = isInCart(product.id);
                 return (
-                  <div key={product.id} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
+                  <div key={product.id} className="bg-white rounded-2xl shadow-sm hover:shadow-orange-200 hover:shadow-lg transition-all duration-300 overflow-hidden group border border-transparent hover:border-orange-200">
                     <Link to={`/products/${product.id}`} className="block">
                       <div className="relative h-48 overflow-hidden">
                         <img src={photo} alt={product.name}
