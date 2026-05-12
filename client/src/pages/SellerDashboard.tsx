@@ -94,7 +94,7 @@ export default function SellerDashboard() {
               <input placeholder="Description (optionnel)" value={form.description}
                 onChange={e => setForm({ ...form, description: e.target.value })}
                 className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-300" />
-              <button onClick={() => createProduct.mutate({ ...form, price: parseFloat(form.price), stock: parseInt(form.stock) })}
+              <button onClick={() => createProduct.mutate({ ...form, price: parseFloat(form.price), stock: parseInt(form.stock), photos: (form as any).imageUrl ? [(form as any).imageUrl] : [] })}
                 disabled={createProduct.isPending}
                 className="col-span-2 bg-green-600 text-white py-2.5 rounded-xl hover:bg-green-700 text-sm font-medium transition-colors disabled:opacity-50">
                 {createProduct.isPending ? 'Création...' : 'Créer le produit'}
