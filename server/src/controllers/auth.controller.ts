@@ -41,7 +41,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         lastName: data.lastName,
         role: data.role || 'BUYER',
         emailVerifyToken: verifyToken,
-        isEmailVerified: process.env.NODE_ENV !== 'production',
+        isEmailVerified: true,
       },
     });
 
