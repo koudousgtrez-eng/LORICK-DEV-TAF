@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Package, MapPin, ShoppingBag, ChevronRight, Clock, CheckCircle, Truck, ChefHat } from 'lucide-react';
+import { Package, MapPin, ShoppingBag, ChevronRight, Clock, CheckCircle, ChefHat } from 'lucide-react';
 import api from '../lib/api';
 import { useAuthStore } from '../store/auth.store';
 

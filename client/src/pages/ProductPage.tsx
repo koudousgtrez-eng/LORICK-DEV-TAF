@@ -18,7 +18,6 @@ const PLACEHOLDER: Record<string, string> = {
 export default function ProductPage() {
   const { id } = useParams();
   const addItem = useCartStore(s => s.addItem);
-  const cartItems = useCartStore(s => s.items);
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [review, setReview] = useState({ rating: 5, comment: '' });
